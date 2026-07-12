@@ -246,6 +246,15 @@
   (defmethod sb-gray:stream-line-length ((stream fundamental-stream))
     80))
 
+#+dotcl
+(progn
+  (defmethod dotcl-gray:stream-read-sequence
+      ((s fundamental-input-stream) seq &optional start end)
+    (or-fallback (stream-read-sequence s seq (or start 0) (or end (length seq)))))
+  (defmethod dotcl-gray:stream-write-sequence
+      ((s fundamental-output-stream) seq &optional start end)
+    (or-fallback (stream-write-sequence s seq (or start 0) (or end (length seq))))))
+
 #+(or ecl clasp mkcl)
 (progn
   (defmethod gray::stream-file-position 
