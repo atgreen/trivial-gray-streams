@@ -12,6 +12,12 @@
 (eval-when (:compile-toplevel :load-toplevel :execute)
   (require :gray-streams))
 
+;; dotcl ships its Gray stream protocol in the DOTCL-GRAY package
+;; (contrib/dotcl-gray); load it so the :import-from clause below resolves.
+#+dotcl
+(eval-when (:compile-toplevel :load-toplevel :execute)
+  (require "dotcl-gray"))
+
 #+allegro
 (eval-when (:compile-toplevel :load-toplevel :execute)
   (unless (fboundp 'excl:stream-write-string)
@@ -51,7 +57,8 @@
                #+lispworks :stream
                #+(or abcl genera) :gray-streams
                #+mezzano :mezzano.gray
-               #-(or sbcl allegro cmu clisp openmcl lispworks ecl clasp mkcl abcl mocl genera mezzano) ...
+               #+dotcl :dotcl-gray
+               #-(or sbcl allegro cmu clisp openmcl lispworks ecl clasp mkcl abcl mocl genera mezzano dotcl) ...
                ,@gray-class-symbols
                ,@gray-function-symbols)
               (:export
