@@ -253,7 +253,13 @@
     (or-fallback (stream-read-sequence s seq (or start 0) (or end (length seq)))))
   (defmethod dotcl-gray:stream-write-sequence
       ((s fundamental-output-stream) seq &optional start end)
-    (or-fallback (stream-write-sequence s seq (or start 0) (or end (length seq))))))
+    (or-fallback (stream-write-sequence s seq (or start 0) (or end (length seq)))))
+  (defmethod dotcl-gray:stream-file-position
+      ((stream fundamental-stream))
+    (stream-file-position stream))
+  (defmethod (setf dotcl-gray:stream-file-position)
+      (position (stream fundamental-stream))
+    (setf (stream-file-position stream) position)))
 
 #+(or ecl clasp mkcl)
 (progn
