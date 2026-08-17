@@ -261,6 +261,17 @@
       (position (stream fundamental-stream))
     (setf (stream-file-position stream) position)))
 
+;; clamiga's GRAY sequence generics use the trivial-gray-streams signature
+;; (stream sequence start end &key), so the bridge is direct.
+#+clamiga
+(progn
+  (defmethod gray:stream-read-sequence
+      ((s fundamental-input-stream) seq start end &key)
+    (or-fallback (stream-read-sequence s seq start end)))
+  (defmethod gray:stream-write-sequence
+      ((s fundamental-output-stream) seq start end &key)
+    (or-fallback (stream-write-sequence s seq start end))))
+
 #+(or ecl clasp mkcl)
 (progn
   (defmethod gray::stream-file-position 
