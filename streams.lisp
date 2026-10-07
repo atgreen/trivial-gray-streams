@@ -272,6 +272,17 @@
       ((s fundamental-output-stream) seq start end &key)
     (or-fallback (stream-write-sequence s seq start end))))
 
+;; EGCL's native sequence generics take the trivial-gray-streams positional
+;; arguments (stream sequence start end), so the bridge is direct.
+#+egcl
+(progn
+  (defmethod egcl-gray-streams:stream-read-sequence
+      ((s fundamental-input-stream) seq start end)
+    (or-fallback (stream-read-sequence s seq start end)))
+  (defmethod egcl-gray-streams:stream-write-sequence
+      ((s fundamental-output-stream) seq start end)
+    (or-fallback (stream-write-sequence s seq start end))))
+
 #+(or ecl clasp mkcl)
 (progn
   (defmethod gray::stream-file-position 
