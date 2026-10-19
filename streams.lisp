@@ -247,9 +247,10 @@
     80))
 
 ;; EGCL's FILE-POSITION calls EGCL-GRAY-STREAMS:STREAM-FILE-POSITION on a Gray
-;; stream; older EGCLs have no such generic.
-#+egcl
-#+#.(cl:if (cl:find-symbol "STREAM-FILE-POSITION" :egcl-gray-streams)
+;; stream; older EGCLs have no such generic.  The package test lives inside
+;; #. because other Lisps evaluate it even under a failing #+EGCL.
+#+#.(cl:if (cl:and (cl:find-package :egcl-gray-streams)
+                   (cl:find-symbol "STREAM-FILE-POSITION" :egcl-gray-streams))
            '(:and)
            '(:or))
 (defmethod egcl-gray-streams:stream-file-position
