@@ -246,6 +246,18 @@
   (defmethod sb-gray:stream-line-length ((stream fundamental-stream))
     80))
 
+;; EGCL's FILE-POSITION calls EGCL-GRAY-STREAMS:STREAM-FILE-POSITION on a Gray
+;; stream; older EGCLs have no such generic.
+#+egcl
+#+#.(cl:if (cl:find-symbol "STREAM-FILE-POSITION" :egcl-gray-streams)
+           '(:and)
+           '(:or))
+(defmethod egcl-gray-streams:stream-file-position
+    ((stream fundamental-stream) &optional position)
+  (if position
+      (setf (stream-file-position stream) position)
+      (stream-file-position stream)))
+
 #+dotcl
 (progn
   (defmethod dotcl-gray:stream-read-sequence
