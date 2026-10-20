@@ -246,6 +246,20 @@
   (defmethod sb-gray:stream-line-length ((stream fundamental-stream))
     80))
 
+;; EGCL's READ-SEQUENCE and WRITE-SEQUENCE call EGCL-GRAY-STREAMS'
+;; STREAM-READ-SEQUENCE and STREAM-WRITE-SEQUENCE, whose default methods move
+;; one element at a time through STREAM-READ-BYTE or STREAM-WRITE-BYTE. Forward
+;; them to this package's generics, as on SBCL, so a stream's own bulk methods
+;; run; a stream without one falls back to EGCL's default.
+#+egcl
+(progn
+  (defmethod egcl-gray-streams:stream-read-sequence
+      ((s fundamental-input-stream) seq start end)
+    (or-fallback (stream-read-sequence s seq (or start 0) (or end (length seq)))))
+  (defmethod egcl-gray-streams:stream-write-sequence
+      ((s fundamental-output-stream) seq start end)
+    (or-fallback (stream-write-sequence s seq (or start 0) (or end (length seq))))))
+
 ;; EGCL's FILE-POSITION calls EGCL-GRAY-STREAMS:STREAM-FILE-POSITION on a Gray
 ;; stream; older EGCLs have no such generic.  The package test lives inside
 ;; #. because other Lisps evaluate it even under a failing #+EGCL.
